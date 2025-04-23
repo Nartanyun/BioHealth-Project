@@ -15,19 +15,19 @@
   }
   
   /* Canvas background */
-  canvas#animated-bg {
-    position: absolute;
+  canvas#background {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: -1;
   }
   
   /* Foreground content */
   .content {
     position: relative;
-    z-index: 2;
+    z-index: 1;
     color: white;
     text-align: center;
     font-family: Arial, sans-serif;
