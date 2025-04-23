@@ -1,51 +1,54 @@
+// Select the canvas element and set up the context
 const canvas = document.getElementById('animated-bg');
 const ctx = canvas.getContext('2d');
-let width, height;
-let shapes = [];
 
-function resize() {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
+// Set canvas size to fill the browser window
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-window.addEventListener('resize', resize);
-resize();
+// Variables for animation
+let blobs = [];
+const blobCount = 8;
+const maxRadius = 150;
+const minRadius = 50;
 
-function createShapes(count) {
-  shapes = [];
-  for (let i = 0; i < count; i++) {
-    shapes.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 50 + 10,
-      dx: (Math.random() - 0.5) * 1.5,
-      dy: (Math.random() - 0.5) * 1.5,
-      color: 'rgba(0, 0, 0, 0.3)'
+// Generate random blobs
+function createBlobs() {
+  blobs = [];
+  for (let i = 0; i < blobCount; i++) {
+    blobs.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * (maxRadius - minRadius) + minRadius,
+      dx: (Math.random() - 0.5) * 2,
+      dy: (Math.random() - 0.5) * 2,
+      color: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`
     });
   }
 }
 
-createShapes(80);
+createBlobs();
 
-function animate() {
-  ctx.clearRect(0, 0, width, height);
-  shapes.forEach(shape => {
-    shape.x += shape.dx;
-    shape.y += shape.dy;
+// Animate blobs
+function animateBlobs() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  blobs.forEach(blob => {
+    blob.x += blob.dx;
+    blob.y += blob.dy;
 
-    if (shape.x < 0 || shape.x > width) shape.dx *= -1;
-    if (shape.y < 0 || shape.y > height) shape.dy *= -1;
+    if (blob.x - blob.radius < 0 || blob.x + blob.radius > canvas.width) blob.dx *= -1;
+    if (blob.y - blob.radius < 0 || blob.y + blob.radius > canvas.height) blob.dy *= -1;
 
-    shape.color = Math.random() < 0.01
-      ? 'rgba(0, 191, 255, 0.6)'
-      : 'rgba(0, 0, 0, 0.3)';
-
-    ctx.fillStyle = shape.color;
+    ctx.fillStyle = blob.color;
     ctx.beginPath();
-    ctx.arc(shape.x, shape.y, shape.size, 0, Math.PI * 2);
+    ctx.arc(blob.x, blob.y, blob.radius, 0, Math.PI * 2);
     ctx.fill();
   });
-  requestAnimationFrame(animate);
+  requestAnimationFrame(animateBlobs);
 }
 
-animate();
+animateBlobs();
